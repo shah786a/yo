@@ -1,28 +1,22 @@
-name: Linux RDP
+
+name: Windows - LiteManager
 
 on:
   workflow_dispatch:
 
 jobs:
-  deploy-linux:
-    runs-on: ubuntu-latest
+  build:
+    name: Start Building...
+    runs-on: windows-latest
+    timeout-minutes: 9999
+    
     steps:
-    - name: Install XFCE Desktop and XRDP
-      run: |
-        sudo apt update
-        sudo apt install -y xfce4 xfce4-goodies xrdp
-        sudo systemctl enable xrdp
-        echo xfce4-session >~/.xsession
-    - name: Configure XRDP
-      run: |
-        sudo sed -i 's/3389/3390/' /etc/xrdp/xrdp.ini
-        sudo systemctl restart xrdp
-    - name: Set RDP Credentials
-      run: |
-              echo "myuser:123456789" | sudo chpasswd
-    - name: Start XRDP
-      run: |
-        sudo systemctl start xrdp
-    - name: Show Public IP
-      run: |
-        echo "Your RDP server is ready. Use port 3390 to connect."
+      - name: Downloading & Installing Essentials
+        run: |
+          Invoke-WebRequest -Uri "https://gitlab.com/chamod12/lm_win-10_github_rdp/-/raw/main/Downloads.bat" -OutFile "Downloads.bat"
+          cmd /c Downloads.bat
+      - name: Connect to LiteManager
+        run: cmd /c show.bat
+
+      - name: Time Counter
+        run: cmd /c loop.bat
